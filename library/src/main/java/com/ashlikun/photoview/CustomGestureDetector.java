@@ -36,7 +36,7 @@ class CustomGestureDetector {
     private PhotoViewAttacher attacher;
     private Context mContext;
 
-    CustomGestureDetector(Context context, PhotoViewAttacher attacher, OnGestureListener listener) {
+    CustomGestureDetector(Context context, final PhotoViewAttacher attacher, OnGestureListener listener) {
         this.attacher = attacher;
         this.mContext = context;
         mListener = listener;

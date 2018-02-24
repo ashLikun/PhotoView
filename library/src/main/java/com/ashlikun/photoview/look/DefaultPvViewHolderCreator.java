@@ -77,8 +77,8 @@ public class DefaultPvViewHolderCreator implements PvViewHolderCreator<Holder> {
             }
 
             @Override
-            public void updateUI(Context context, int position, String data) {
-                RequestOptions options = new RequestOptions();
+            public void updateUI(Context context, int position, final String data) {
+                final RequestOptions options = new RequestOptions();
                 options.override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
                 GlideUtils.show(activity, new SimpleTarget<Drawable>() {
                     @Override
