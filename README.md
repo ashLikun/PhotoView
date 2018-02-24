@@ -16,9 +16,14 @@ allprojects {
 并且:
 
 ```gradle
-dependencies {
-    compile 'com.github.ashLikun:PhotoView:{latest version}'
-}
+    dependencies {
+        compile 'com.github.ashLikun:PhotoView:{latest version}'
+        compile 'com.github.ashLikun.frame:glideutils:2.1.1'//注意看最新版本
+     }
+     compileOptions {
+         sourceCompatibility JavaVersion.VERSION_1_8
+         targetCompatibility JavaVersion.VERSION_1_8
+     }
 ```
 
 ## 详细介绍

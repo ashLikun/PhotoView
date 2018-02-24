@@ -24,16 +24,12 @@ android {
             url "https://jitpack.io"
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile rootProject.ext.v7AppCompat
-    compileOnly 'com.github.ashLikun.frame:glideutils:2.0.5'
+    compileOnly 'com.github.ashLikun.frame:glideutils:2.1.3'
 }
 
 apply from: '../maven.gradle'
