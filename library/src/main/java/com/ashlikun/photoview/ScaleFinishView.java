@@ -127,19 +127,22 @@ public class ScaleFinishView extends FrameLayout {
 
 
     private void setViewDefault() {
-        float orginTransX = getTranslationX();
-        float orginTransY = getTranslationY();
-        float scaleX = getScaleX();
-        float scaleY = getScaleY();
+        final float orginTransX = getTranslationX();
+        final float orginTransY = getTranslationY();
+        final float scaleX = getScaleX();
+        final float scaleY = getScaleY();
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
-        animator.addUpdateListener(animation -> {
-            Float value = (Float) animation.getAnimatedValue();
-            //恢复默认
-            setScaleX(scaleX + (1 - scaleX) * value);
-            setScaleY(scaleY + (1 - scaleY) * value);
-            setParentBackground(mParentAlpha + (1 - mParentAlpha) * value);
-            setTranslationX(orginTransX - orginTransX * value);
-            setTranslationY(orginTransY - orginTransY * value);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Float value = (Float) animation.getAnimatedValue();
+                //恢复默认
+                setScaleX(scaleX + (1 - scaleX) * value);
+                setScaleY(scaleY + (1 - scaleY) * value);
+                setParentBackground(mParentAlpha + (1 - mParentAlpha) * value);
+                setTranslationX(orginTransX - orginTransX * value);
+                setTranslationY(orginTransY - orginTransY * value);
+            }
         });
         animator.addListener(new AnimatorListenerAdapter() {
             @Override

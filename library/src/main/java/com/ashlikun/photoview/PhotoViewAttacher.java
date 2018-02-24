@@ -705,14 +705,17 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
      * 开始缩放动画
      */
     private void startZoomAnim(float currentZoom, float targetZoom,
-                               float focalX, float focalY) {
+                               final float focalX, final float focalY) {
         ValueAnimator autoZoomAnim = ValueAnimator.ofFloat(currentZoom, targetZoom);
-        autoZoomAnim.addUpdateListener(animation -> {
-            float deltaScale = ((Float) animation.getAnimatedValue()) / getScale();
-            if (checkScaleBound(deltaScale)) {
-                onGestureListener.onScaleChange(deltaScale, focalX, focalY);
-                getSuppMatrix().postScale(deltaScale, deltaScale, focalX, focalY);
-                checkAndDisplayMatrix();
+        autoZoomAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float deltaScale = ((Float) animation.getAnimatedValue()) / getScale();
+                if (checkScaleBound(deltaScale)) {
+                    onGestureListener.onScaleChange(deltaScale, focalX, focalY);
+                    getSuppMatrix().postScale(deltaScale, deltaScale, focalX, focalY);
+                    checkAndDisplayMatrix();
+                }
             }
         });
         autoZoomAnim.setDuration(mZoomDuration);
