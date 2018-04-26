@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.ashlikun.photoview.look.DefaultPvViewHolderCreator;
+import com.ashlikun.photoview.look.DefaultPViewHolderCreator;
 import com.ashlikun.photoview.look.PhotoViewPager;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class PhotoActivity extends AppCompatActivity {
         list.add(lengthImage);
         list.add(meinvImage);
 
-        viewPager.setData(list, new DefaultPvViewHolderCreator(this));
+        viewPager.setData(list, new DefaultPViewHolderCreator(this));
     }
 
     private void setWindowFullScreen() {

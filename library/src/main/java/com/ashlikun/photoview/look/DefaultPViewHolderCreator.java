@@ -26,11 +26,11 @@ import com.bumptech.glide.request.transition.Transition;
  * 功能介绍：
  */
 
-public class DefaultPvViewHolderCreator implements PvViewHolderCreator<Holder> {
+public class DefaultPViewHolderCreator implements PvViewHolderCreator<Holder> {
     Activity activity;
     DisplayMetrics displayMetrics = new DisplayMetrics();
 
-    public DefaultPvViewHolderCreator(Activity activity) {
+    public DefaultPViewHolderCreator(Activity activity) {
         this.activity = activity;
         activity.getWindow().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     }
@@ -83,7 +83,7 @@ public class DefaultPvViewHolderCreator implements PvViewHolderCreator<Holder> {
                 GlideUtils.show(activity, new SimpleTarget<Drawable>() {
                     @Override
                     public void onResourceReady(Drawable resource, Transition transition) {
-                        if (resource.getIntrinsicHeight() > displayMetrics.heightPixels) {
+                        if (resource.getIntrinsicHeight() > finishView.getHeight()) {
                             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                         }
                         GlideUtils.show(imageView, data, options);

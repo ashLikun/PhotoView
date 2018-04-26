@@ -28,7 +28,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile rootProject.ext.v7AppCompat
+    compileOnly rootProject.ext.v7AppCompat
     compileOnly 'com.github.ashLikun.frame:glideutils:2.1.3'
 }
 
