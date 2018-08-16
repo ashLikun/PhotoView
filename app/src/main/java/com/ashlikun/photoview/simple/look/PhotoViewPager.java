@@ -1,4 +1,4 @@
-package com.ashlikun.photoview.look;
+package com.ashlikun.photoview.simple.look;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.ashlikun.photoview.R;
+import com.ashlikun.photoview.simple.R;
 
 import java.util.ArrayList;
 import java.util.List;

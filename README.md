@@ -17,8 +17,7 @@ allprojects {
 
 ```gradle
     dependencies {
-        compile 'com.github.ashLikun:PhotoView:{latest version}'
-        compile 'com.github.ashLikun.frame:glideutils:2.1.1'//注意看最新版本
+        implementation 'com.github.ashLikun:PhotoView:{latest version}'
      }
      compileOptions {
          sourceCompatibility JavaVersion.VERSION_1_8
@@ -29,7 +28,7 @@ allprojects {
 ## 详细介绍
 
 ### PhotoView
-    可缩放的ImageView，可浏览长图
+    可缩放的ImageView，可浏览长图( imageView.setScaleType(ImageView.ScaleType.CENTER_CROP))
 
 ### ScaleFinishView
     仿微信的下滑销毁activity

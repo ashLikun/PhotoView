@@ -1,4 +1,4 @@
-package com.ashlikun.photoview.look;
+package com.ashlikun.photoview.simple.look;
 
 /**
  * Created by Sai on 15/12/14.

@@ -1,4 +1,4 @@
-package com.ashlikun.photoview.look;
+package com.ashlikun.photoview.simple.look;
 
 /**
  * 作者　　: 李坤

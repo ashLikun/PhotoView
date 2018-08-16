@@ -1,4 +1,4 @@
-package com.ashlikun.photoview.look;
+package com.ashlikun.photoview.simple.look;
 
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;

@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.ashlikun.photoview.look.DefaultPViewHolderCreator;
-import com.ashlikun.photoview.look.PhotoViewPager;
+import com.ashlikun.photoview.simple.look.DefaultPViewHolderCreator;
+import com.ashlikun.photoview.simple.look.PhotoViewPager;
 
 import java.util.ArrayList;
 import java.util.List;

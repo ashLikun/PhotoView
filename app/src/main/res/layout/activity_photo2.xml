@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.ashlikun.photoview.look.PhotoViewPager
+    <com.ashlikun.photoview.simple.look.PhotoViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.ashlikun.photoview.look.PhotoViewPager>
+        android:layout_height="match_parent"></com.ashlikun.photoview.simple.look.PhotoViewPager>
 </FrameLayout>
