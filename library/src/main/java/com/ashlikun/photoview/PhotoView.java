@@ -46,7 +46,6 @@ import com.ashlikun.photoview.listener.OnViewTapListener;
  * 方法功能：这是个图片缩放控件，扩展之{@link ImageView}
  * 整体的功能来之{@link PhotoViewAttacher}
  */
-
 public class PhotoView extends AppCompatImageView {
     /**
      * 整个业务逻辑都由{@link PhotoViewAttacher}实现
