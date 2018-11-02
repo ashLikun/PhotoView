@@ -20,11 +20,13 @@ import android.widget.FrameLayout;
  * 创建时间: 2017/12/28　10:25
  * 邮箱　　：496546144@qq.com
  * <p>
- * 功能介绍：
+ * 功能介绍：仿照微信下拉销毁
  */
 
 public class ScaleFinishView extends FrameLayout {
-    //滑动到多少地方可以回掉销毁接口
+    /**
+     * 滑动到多少地方可以回掉销毁接口
+     */
     private float finishElement = 3.5f;
 
     public ScaleFinishView(@NonNull Context context) {
@@ -49,9 +51,13 @@ public class ScaleFinishView extends FrameLayout {
     private float mDisplacementY;
     private float mInitialTy;
     private float mInitialTx;
-    //是否正在移动
+    /**
+     * 是否正在移动
+     */
     private boolean mTracking;
-    //父控件的透明度
+    /**
+     * 父控件的透明度
+     */
     private float mParentAlpha;
 
     public void setFinishElement(float finishElement) {
@@ -72,19 +78,20 @@ public class ScaleFinishView extends FrameLayout {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_POINTER_UP:
+                boolean isFinish = false;
                 if (mTracking) {
                     mTracking = false;
                     float currentTranslateY = getTranslationY();
                     if (currentTranslateY > getHeight() / finishElement) {
                         if (onSwipeListener != null) {
-                            onSwipeListener.onFinishSwipe();
+                            isFinish = true;
+                            mParentAlpha = 0;
                         }
-                        // break;
                     }
                 }
                 setViewDefault();
                 if (onSwipeListener != null) {
-                    onSwipeListener.onOverSwipe();
+                    onSwipeListener.onOverSwipe(isFinish);
                 }
                 break;
         }
@@ -197,20 +204,28 @@ public class ScaleFinishView extends FrameLayout {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     view.setBackground(parentDrawable);
                 } else {
-                    view.setBackgroundDrawable(parentDrawable);
+                    view.setBackground(parentDrawable);
                 }
             }
         }
     }
 
     public interface OnSwipeListener {
-        //到了可以销毁的时候
-        void onFinishSwipe();
 
-        //结束
-        void onOverSwipe();
+        /**
+         * 结束
+         *
+         * @param isFinish 是否可以销毁
+         */
+        void onOverSwipe(boolean isFinish);
 
-        //正在滑动,如果返回true，代表内部不做背景色变化操作
+        /**
+         * 正在滑动,如果返回true，代表内部不做背景色变化操作
+         *
+         * @param offsetY
+         * @param alpha
+         * @return
+         */
         boolean onSwiping(float offsetY, float alpha);
     }
 

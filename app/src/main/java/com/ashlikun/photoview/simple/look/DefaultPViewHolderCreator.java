@@ -52,13 +52,10 @@ public class DefaultPViewHolderCreator implements PvViewHolderCreator<Holder> {
                 finishView = view.findViewById(R.id.scaleView);
                 finishView.setOnSwipeListener(new ScaleFinishView.OnSwipeListener() {
                     @Override
-                    public void onFinishSwipe() {
-                        activity.finish();
-                    }
-
-                    @Override
-                    public void onOverSwipe() {
-
+                    public void onOverSwipe(boolean isFinish) {
+                        if (isFinish) {
+                            activity.finish();
+                        }
                     }
 
                     @Override
