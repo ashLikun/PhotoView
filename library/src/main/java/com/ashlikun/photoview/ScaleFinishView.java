@@ -85,11 +85,13 @@ public class ScaleFinishView extends FrameLayout {
                     if (currentTranslateY > getHeight() / finishElement) {
                         if (onSwipeListener != null) {
                             isFinish = true;
-                            mParentAlpha = 0;
+                            setParentBackground(0);
                         }
                     }
                 }
-                setViewDefault();
+                if (!isFinish) {
+                    setViewDefault();
+                }
                 if (onSwipeListener != null) {
                     onSwipeListener.onOverSwipe(isFinish);
                 }
