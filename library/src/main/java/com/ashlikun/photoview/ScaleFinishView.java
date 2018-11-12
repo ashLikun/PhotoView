@@ -5,9 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -202,12 +202,10 @@ public class ScaleFinishView extends FrameLayout {
         if (view != null) {
             Drawable parentDrawable = view.getBackground();
             if (parentDrawable != null) {
+                //防止改变drawable后影响全局的对应的drawable
+                parentDrawable = DrawableCompat.wrap(parentDrawable).mutate();
                 parentDrawable.setAlpha((int) (alpha * 255));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setBackground(parentDrawable);
-                } else {
-                    view.setBackground(parentDrawable);
-                }
+                view.setBackground(parentDrawable);
             }
         }
     }
