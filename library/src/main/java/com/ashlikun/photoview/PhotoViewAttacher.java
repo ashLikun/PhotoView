@@ -21,6 +21,7 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.v4.view.ScrollingView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -48,10 +49,15 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
     private static float DEFAULT_GREATER_SCALE = 5f;
     private static float DEFAULT_MIN_SCALE = 0.5f;
     private static int DEFAULT_ZOOM_DURATION = 250;
-    private static final int EDGE_NONE = -1;
-    private static final int EDGE_LEFT = 0;
-    private static final int EDGE_RIGHT = 1;
-    private static final int EDGE_BOTH = 2;
+
+    private static final int HORIZONTAL_EDGE_NONE = -1;
+    private static final int HORIZONTAL_EDGE_LEFT = 0;
+    private static final int HORIZONTAL_EDGE_RIGHT = 1;
+    private static final int HORIZONTAL_EDGE_BOTH = 2;
+    private static final int VERTICAL_EDGE_NONE = -1;
+    private static final int VERTICAL_EDGE_TOP = 0;
+    private static final int VERTICAL_EDGE_BOTTOM = 1;
+    private static final int VERTICAL_EDGE_BOTH = 2;
     private static int SINGLE_TOUCH = 1;
     private Interpolator mInterpolator = new AccelerateDecelerateInterpolator();
     private int mZoomDuration = DEFAULT_ZOOM_DURATION;
@@ -84,7 +90,8 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
     private OnViewDragListener mOnViewDragListener;
 
 
-    private int mScrollEdge = EDGE_BOTH;
+    private int mHorizontalScrollEdge = HORIZONTAL_EDGE_BOTH;
+    private int mVerticalScrollEdge = VERTICAL_EDGE_BOTH;
     private float mBaseRotation;
 
     private boolean mZoomEnabled = true;
@@ -127,14 +134,14 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
             mSuppMatrix.postTranslate(dx, dy);
             checkAndDisplayMatrix();
             if (mAllowParentInterceptOnEdge && !mScaleDragDetector.isScaling()) {
-                if (mScrollEdge == EDGE_BOTH
-                        || (mScrollEdge == EDGE_LEFT && dx >= 1f)
-                        || (mScrollEdge == EDGE_RIGHT && dx <= -1f)) {
+                if (mHorizontalScrollEdge == HORIZONTAL_EDGE_BOTH
+                        || (mHorizontalScrollEdge == HORIZONTAL_EDGE_LEFT && dx >= 1f)
+                        || (mHorizontalScrollEdge == HORIZONTAL_EDGE_RIGHT && dx <= -1f)
+                        || (mVerticalScrollEdge == VERTICAL_EDGE_TOP && dy >= 1f)
+                        || (mVerticalScrollEdge == VERTICAL_EDGE_BOTTOM && dy <= -1f)) {
                     requestInterceptScaleFinishViewParentTouchEvent(false);
-                } else {
-                    requestInterceptScaleFinishViewParentTouchEvent(true);
                 }
-                return false;
+                return true;
             } else {
                 requestInterceptScaleFinishViewParentTouchEvent(true);
                 return true;
@@ -290,6 +297,11 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
         boolean handled = false;
         if (mZoomEnabled && Util.hasDrawable(mImageView)) {
             switch (ev.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    requestInterceptScaleFinishViewParentTouchEvent(true);
+                    // If we're flinging, and the user presses down, cancel
+                    // fling
+                    break;
                 //离开屏幕的时候恢复图片缩放
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP:
@@ -639,7 +651,7 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
         }
         final float height = rect.height(), width = rect.width();
         float deltaX = 0, deltaY = 0;
-        final int viewHeight = Util.getImageViewHeight(mImageView);
+        final int viewHeight = getImageViewHeight(mImageView);
         if (height <= viewHeight) {
             switch (mScaleType) {
                 case FIT_START:
@@ -652,13 +664,17 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
                     deltaY = (viewHeight - height) / 2 - rect.top;
                     break;
             }
+            mVerticalScrollEdge = VERTICAL_EDGE_BOTH;
         } else if (rect.top > 0) {
+            mVerticalScrollEdge = VERTICAL_EDGE_TOP;
             deltaY = -rect.top;
         } else if (rect.bottom < viewHeight) {
+            mVerticalScrollEdge = VERTICAL_EDGE_BOTTOM;
             deltaY = viewHeight - rect.bottom;
+        } else {
+            mVerticalScrollEdge = VERTICAL_EDGE_NONE;
         }
-
-        final int viewWidth = Util.getImageViewWidth(mImageView);
+        final int viewWidth = getImageViewWidth(mImageView);
         if (width <= viewWidth) {
             switch (mScaleType) {
                 case FIT_START:
@@ -671,17 +687,16 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
                     deltaX = (viewWidth - width) / 2 - rect.left;
                     break;
             }
-            mScrollEdge = EDGE_BOTH;
+            mHorizontalScrollEdge = HORIZONTAL_EDGE_BOTH;
         } else if (rect.left > 0) {
-            mScrollEdge = EDGE_LEFT;
+            mHorizontalScrollEdge = HORIZONTAL_EDGE_LEFT;
             deltaX = -rect.left;
         } else if (rect.right < viewWidth) {
             deltaX = viewWidth - rect.right;
-            mScrollEdge = EDGE_RIGHT;
+            mHorizontalScrollEdge = HORIZONTAL_EDGE_RIGHT;
         } else {
-            mScrollEdge = EDGE_NONE;
+            mHorizontalScrollEdge = HORIZONTAL_EDGE_NONE;
         }
-
         // Finally actually translate the matrix
         mSuppMatrix.postTranslate(deltaX, deltaY);
         return true;
@@ -697,10 +712,17 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
                 (getScale() > getMinimumScale() || scaleFactor > 1f);
     }
 
+    private int getImageViewWidth(ImageView imageView) {
+        return imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
+    }
+
     protected ImageView getImageView() {
         return mImageView;
     }
 
+    private int getImageViewHeight(ImageView imageView) {
+        return imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
+    }
 
     /**
      * 开始缩放动画
@@ -728,10 +750,15 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
     protected void requestInterceptScaleFinishViewParentTouchEvent(boolean disallowIntercept) {
         ViewParent parent = mImageView.getParent();
         if (parent != null) {
-            ViewParent parent2 = parent.getParent();
-            if (parent2 != null) {
-                parent2.requestDisallowInterceptTouchEvent(disallowIntercept);
+            if (parent instanceof ScrollingView) {
+                ViewParent parent2 = parent.getParent();
+                if (parent2 != null) {
+                    parent2.requestDisallowInterceptTouchEvent(disallowIntercept);
+                }
+            } else {
+                parent.requestDisallowInterceptTouchEvent(disallowIntercept);
             }
+
         }
     }
 

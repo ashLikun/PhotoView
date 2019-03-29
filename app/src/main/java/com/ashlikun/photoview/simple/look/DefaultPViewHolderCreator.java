@@ -63,7 +63,12 @@ public class DefaultPViewHolderCreator implements PvViewHolderCreator<Holder> {
                         return false;
                     }
                 });
-                imageView.setOnClickListener(v -> activity.finish());
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        activity.finish();
+                    }
+                });
                 return view;
             }
 
