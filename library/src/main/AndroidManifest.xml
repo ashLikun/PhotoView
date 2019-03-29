@@ -2,10 +2,6 @@
 
     package="com.ashlikun.photoview">
 
-    <application
-        android:allowBackup="true"
-        android:supportsRtl="true">
-
-    </application>
+    <application></application>
 
 </manifest>

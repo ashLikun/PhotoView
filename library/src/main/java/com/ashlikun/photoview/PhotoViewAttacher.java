@@ -727,7 +727,7 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
     //请求ScaleFinishView的上一级是否能拦截事件
     protected void requestInterceptScaleFinishViewParentTouchEvent(boolean disallowIntercept) {
         ViewParent parent = mImageView.getParent();
-        if (parent != null && parent instanceof ScaleFinishView) {
+        if (parent != null) {
             ViewParent parent2 = parent.getParent();
             if (parent2 != null) {
                 parent2.requestDisallowInterceptTouchEvent(disallowIntercept);
@@ -737,7 +737,7 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
 
     protected void requestInterceptTouchEvent(boolean disallowIntercept) {
         ViewParent parent = mImageView.getParent();
-        if (parent != null && parent instanceof ScaleFinishView) {
+        if (parent != null) {
             parent.requestDisallowInterceptTouchEvent(disallowIntercept);
         }
     }
