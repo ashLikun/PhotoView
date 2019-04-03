@@ -140,6 +140,8 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
                         || (mVerticalScrollEdge == VERTICAL_EDGE_TOP && dy >= 1f)
                         || (mVerticalScrollEdge == VERTICAL_EDGE_BOTTOM && dy <= -1f)) {
                     requestInterceptScaleFinishViewParentTouchEvent(false);
+                } else {
+                    requestInterceptScaleFinishViewParentTouchEvent(true);
                 }
                 return true;
             } else {
