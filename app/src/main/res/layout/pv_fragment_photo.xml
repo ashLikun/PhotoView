@@ -3,11 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/PvViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"></android.support.v4.view.ViewPager>
+        android:orientation="vertical"></androidx.viewpager.widget.ViewPager>
 
 
     <!-- 翻页指示点的viewgroup -->

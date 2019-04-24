@@ -21,7 +21,7 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.support.v4.view.ScrollingView;
+import androidx.core.view.ScrollingView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;

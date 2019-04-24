@@ -1,7 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-
-    package="com.ashlikun.photoview">
-
-    <application></application>
-
-</manifest>
+<manifest package="com.ashlikun.photoview"></manifest>
