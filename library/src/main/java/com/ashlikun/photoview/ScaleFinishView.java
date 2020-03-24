@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
@@ -124,6 +125,16 @@ public class ScaleFinishView extends FrameLayout {
                         mInitialTx = getTranslationX();
                     }
                     handle = true;
+                    if (getParent() != null) {
+                        getParent().requestDisallowInterceptTouchEvent(true);
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_POINTER_UP:
+                if (getParent() != null) {
+                    getParent().requestDisallowInterceptTouchEvent(false);
                 }
                 break;
         }
@@ -197,10 +208,15 @@ public class ScaleFinishView extends FrameLayout {
         }
     }
 
+
     private void setParentBackground(float alpha) {
-        View view = (View) getParent();
         mParentAlpha = alpha;
-        if (view != null) {
+        setParentBackground(getParent(), alpha);
+    }
+
+    private void setParentBackground(ViewParent parent, float alpha) {
+        if (parent != null && parent instanceof View) {
+            View view = (View) parent;
             Drawable parentDrawable = view.getBackground();
             if (parentDrawable != null) {
                 //防止改变drawable后影响全局的对应的drawable
@@ -208,6 +224,7 @@ public class ScaleFinishView extends FrameLayout {
                 parentDrawable.setAlpha((int) (alpha * 255));
                 view.setBackground(parentDrawable);
             }
+            setParentBackground(view.getParent(), alpha);
         }
     }
 
@@ -231,9 +248,9 @@ public class ScaleFinishView extends FrameLayout {
     }
 
 
-    private OnSwipeListener onSwipeListener;
+    private ScaleFinishView.OnSwipeListener onSwipeListener;
 
-    public void setOnSwipeListener(OnSwipeListener onSwipeListener) {
+    public void setOnSwipeListener(ScaleFinishView.OnSwipeListener onSwipeListener) {
         this.onSwipeListener = onSwipeListener;
     }
 
