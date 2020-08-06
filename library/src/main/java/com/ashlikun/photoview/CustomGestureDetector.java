@@ -17,11 +17,12 @@ package com.ashlikun.photoview;
 
 import android.content.Context;
 import android.graphics.RectF;
-import androidx.core.view.GestureDetectorCompat;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.OverScroller;
+
+import androidx.core.view.GestureDetectorCompat;
 
 /**
  * Does a whole lot of gesture detecting.
@@ -45,12 +46,6 @@ class CustomGestureDetector {
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
                 float scaleFactor = detector.getScaleFactor();
-//                if (scaleFactor < 1) {
-//                    scaleFactor = scaleFactor * 0.96f;
-//                }
-//                if (scaleFactor > 1) {
-//                    scaleFactor = scaleFactor * 1.04f;
-//                }
                 if (Float.isNaN(scaleFactor) || Float.isInfinite(scaleFactor)) {
                     return false;
                 }
@@ -136,6 +131,11 @@ class CustomGestureDetector {
         });
     }
 
+    /**
+     * 是否正在缩放，手指离开就不是
+     *
+     * @return
+     */
     public boolean isScaling() {
         return mDetector.isInProgress();
     }
@@ -147,13 +147,14 @@ class CustomGestureDetector {
     public boolean onTouchEvent(MotionEvent ev) {
         try {
             //先处理缩放
-            mDetector.onTouchEvent(ev);
+            boolean scalResult = mDetector.onTouchEvent(ev);
+            boolean result2 = false;
             mIsDragging = false;
-            if (!mDetector.isInProgress()) {
+            if (!isScaling()) {
                 //再处理普通的手势
-                detectorCompat.onTouchEvent(ev);
+                result2 = detectorCompat.onTouchEvent(ev);
             }
-            return true;
+            return scalResult || result2;
         } catch (IllegalArgumentException e) {
             return true;
         }

@@ -48,6 +48,10 @@ public class ScaleFinishView extends FrameLayout {
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop() * 2;
     }
 
+    //是否可以处理缩放，给子view使用
+    private boolean isScaleEnableNeibu = true;
+    //是否可以处理缩放，外部使用
+    private boolean isScaleEnable = true;
     private int mTouchSlop;
     private float mDisplacementX;
     private float mDisplacementY;
@@ -68,6 +72,9 @@ public class ScaleFinishView extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!isScaleEnable || !isScaleEnableNeibu) {
+            return super.onTouchEvent(event);
+        }
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_MOVE:
                 //偏移量
@@ -104,6 +111,9 @@ public class ScaleFinishView extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
+        if (!isScaleEnable || !isScaleEnableNeibu) {
+            return false;
+        }
         super.onInterceptTouchEvent(event);
         boolean handle = false;
         switch (event.getActionMasked()) {
@@ -208,6 +218,13 @@ public class ScaleFinishView extends FrameLayout {
         }
     }
 
+    public void setScaleEnable(boolean scaleEnable) {
+        isScaleEnable = scaleEnable;
+    }
+
+    protected void setScaleEnableNeibu(boolean scaleEnable) {
+        isScaleEnableNeibu = scaleEnable;
+    }
 
     private void setParentBackground(float alpha) {
         mParentAlpha = alpha;
@@ -227,6 +244,7 @@ public class ScaleFinishView extends FrameLayout {
             setParentBackground(view.getParent(), alpha);
         }
     }
+
 
     public interface OnSwipeListener {
 

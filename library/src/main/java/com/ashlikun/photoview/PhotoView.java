@@ -20,10 +20,11 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ImageView;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.ashlikun.photoview.listener.OnMatrixChangedListener;
 import com.ashlikun.photoview.listener.OnOutsidePhotoTapListener;
@@ -234,6 +235,10 @@ public class PhotoView extends AppCompatImageView {
         attacher.setScale(scale);
     }
 
+    public boolean isScale(float scale) {
+        return attacher.isScale();
+    }
+
     public void setScale(float scale, boolean animate) {
         attacher.setScale(scale, animate);
     }
@@ -263,36 +268,11 @@ public class PhotoView extends AppCompatImageView {
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        requestDisallowInterceptTouchEvent();
-        return super.dispatchTouchEvent(event);
-    }
-
-    @Override
     public boolean onTouchEvent(MotionEvent event) {
         return attacher.onTouch(event);
     }
 
-
-    public void requestDisallowInterceptTouchEvent() {
-        if (isZoomable() && Util.hasDrawable(this)) {
-            RectF rectF = getDisplayRect();
-            if (rectF.top < 0) {
-                //是否到达顶部，负数是没有到达顶部
-                if (getScale() != 1) {
-                    //没在顶部，缩放不为1，就 请求不能拦截事件
-                    attacher.requestInterceptTouchEvent(true);
-                } else {
-                    attacher.requestInterceptTouchEvent(true);
-                }
-            } else {
-                if (getScale() != 1) {
-                    //缩放不为1，
-                    attacher.requestInterceptTouchEvent(true);
-                } else {
-                    attacher.requestInterceptTouchEvent(false);
-                }
-            }
-        }
+    public boolean canSwiping() {
+        return getAttacher().canSwiping();
     }
 }

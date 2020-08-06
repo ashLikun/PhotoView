@@ -21,7 +21,6 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import androidx.core.view.ScrollingView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -30,6 +29,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+
+import androidx.core.view.ScrollingView;
 
 import com.ashlikun.photoview.listener.OnMatrixChangedListener;
 import com.ashlikun.photoview.listener.OnOutsidePhotoTapListener;
@@ -133,6 +134,7 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
             }
             mSuppMatrix.postTranslate(dx, dy);
             checkAndDisplayMatrix();
+            //父控件（非ScaleFinishView）是否可以拦截事件
             if (mAllowParentInterceptOnEdge && !mScaleDragDetector.isScaling()) {
                 if (mHorizontalScrollEdge == HORIZONTAL_EDGE_BOTH
                         || (mHorizontalScrollEdge == HORIZONTAL_EDGE_LEFT && dx >= 1f)
@@ -143,11 +145,10 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
                 } else {
                     requestInterceptScaleFinishViewParentTouchEvent(true);
                 }
-                return true;
             } else {
                 requestInterceptScaleFinishViewParentTouchEvent(true);
-                return true;
             }
+            return true;
         }
 
         @Override
@@ -324,14 +325,12 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
                     break;
             }
             if (mScaleDragDetector != null) {
-//                //保存上一次缩放或者拖拽
-//                boolean wasScaling = mScaleDragDetector.isScaling();
-//                boolean wasDragging = mScaleDragDetector.isDragging();
                 handled = mScaleDragDetector.onTouchEvent(ev);
-//                //是否拖拽或者缩放
-//                boolean didntScale = !wasScaling && !mScaleDragDetector.isScaling();
-//                boolean didntDrag = !wasDragging && !mScaleDragDetector.isDragging();
-//                mBlockParentIntercept = didntScale && didntDrag;
+            }
+            //ScaleFinishView是否可以处理Swipe
+            ScaleFinishView finishView = parentIsScaleFinishView();
+            if (finishView != null) {
+                finishView.setScaleEnableNeibu(!canSwiping());
             }
         }
         return handled;
@@ -418,6 +417,10 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
 
     public void setOnViewDragListener(OnViewDragListener listener) {
         mOnViewDragListener = listener;
+    }
+
+    public boolean isScale() {
+        return getScale() != 1;
     }
 
     public void setScale(float scale) {
@@ -642,6 +645,15 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
     }
 
     /**
+     * 是否在顶部
+     *
+     * @return
+     */
+    public boolean isTop() {
+        return mVerticalScrollEdge == VERTICAL_EDGE_TOP || mVerticalScrollEdge == VERTICAL_EDGE_BOTH;
+    }
+
+    /**
      * 检测矩阵边界
      *
      * @return
@@ -667,10 +679,10 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
                     break;
             }
             mVerticalScrollEdge = VERTICAL_EDGE_BOTH;
-        } else if (rect.top > 0) {
+        } else if (rect.top >= 0) {
             mVerticalScrollEdge = VERTICAL_EDGE_TOP;
             deltaY = -rect.top;
-        } else if (rect.bottom < viewHeight) {
+        } else if (rect.bottom <= viewHeight) {
             mVerticalScrollEdge = VERTICAL_EDGE_BOTTOM;
             deltaY = viewHeight - rect.bottom;
         } else {
@@ -690,10 +702,10 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
                     break;
             }
             mHorizontalScrollEdge = HORIZONTAL_EDGE_BOTH;
-        } else if (rect.left > 0) {
+        } else if (rect.left >= 0) {
             mHorizontalScrollEdge = HORIZONTAL_EDGE_LEFT;
             deltaX = -rect.left;
-        } else if (rect.right < viewWidth) {
+        } else if (rect.right <= viewWidth) {
             deltaX = viewWidth - rect.right;
             mHorizontalScrollEdge = HORIZONTAL_EDGE_RIGHT;
         } else {
@@ -764,10 +776,36 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
         }
     }
 
+
     protected void requestInterceptTouchEvent(boolean disallowIntercept) {
         ViewParent parent = mImageView.getParent();
         if (parent != null) {
             parent.requestDisallowInterceptTouchEvent(disallowIntercept);
         }
     }
+
+    public boolean canSwiping() {
+        boolean photoResult = isScale();
+        //没有缩放再判断是否到顶部
+        if (!photoResult) {
+            photoResult = !isTop();
+        }
+        return photoResult;
+    }
+
+    protected ScaleFinishView parentIsScaleFinishView() {
+        return parentIsScaleFinishView(mImageView.getParent());
+    }
+
+    protected ScaleFinishView parentIsScaleFinishView(ViewParent parent) {
+        if (parent != null) {
+            if (parent instanceof ScaleFinishView) {
+                return (ScaleFinishView) parent;
+            } else {
+                return parentIsScaleFinishView(parent.getParent());
+            }
+        }
+        return null;
+    }
+
 }
