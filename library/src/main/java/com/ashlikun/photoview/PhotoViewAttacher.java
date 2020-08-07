@@ -96,6 +96,8 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
     private float mBaseRotation;
 
     private boolean mZoomEnabled = true;
+    //是否开始的时候在图片顶部,如果不是，内部会用自己的算法计算
+    private boolean mIsStartToTop = false;
     private ScaleType mScaleType = ScaleType.FIT_CENTER;
 
     private OnGestureListener onGestureListener = new OnGestureListener() {
@@ -465,6 +467,14 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
         }
     }
 
+    public boolean isIsStartToTop() {
+        return mIsStartToTop;
+    }
+
+    public void setIsStartToTop(boolean isStartToTop) {
+        this.mIsStartToTop = isStartToTop;
+    }
+
     public boolean isZoomable() {
         return mZoomEnabled;
     }
@@ -590,15 +600,17 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
 
         final float viewWidth = Util.getImageViewWidth(mImageView);
         final float viewHeight = Util.getImageViewHeight(mImageView);
-        final int drawableWidth = drawable.getIntrinsicWidth();
-        final int drawableHeight = drawable.getIntrinsicHeight();
+        final float drawableWidth = drawable.getIntrinsicWidth();
+        final float drawableHeight = drawable.getIntrinsicHeight();
 
         mBaseMatrix.reset();
 
         final float widthScale = viewWidth / drawableWidth;
         final float heightScale = viewHeight / drawableHeight;
+        final float imgBili = drawableHeight / drawableWidth;
+        final float viewBili = viewHeight / viewWidth;
         //长图浏览开始的位置为0
-        boolean isStartToTop = drawableHeight > viewHeight;
+        boolean isStartToTop = mIsStartToTop || (drawableHeight > viewHeight / 2 && imgBili > viewBili) || imgBili > 6;
 
         if (mScaleType == ScaleType.CENTER) {
             mBaseMatrix.postTranslate((viewWidth - drawableWidth) / 2F,

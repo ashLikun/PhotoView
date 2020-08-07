@@ -144,6 +144,9 @@ public class PhotoView extends AppCompatImageView {
     public void setRotationTo(float rotationDegree) {
         attacher.setRotationTo(rotationDegree);
     }
+    public void setIsStartToTop(boolean isStartToTop) {
+        attacher.setIsStartToTop(isStartToTop);
+    }
 
     public void setRotationBy(float rotationDegree) {
         attacher.setRotationBy(rotationDegree);
