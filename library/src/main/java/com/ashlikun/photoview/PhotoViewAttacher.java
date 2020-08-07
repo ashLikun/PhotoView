@@ -610,7 +610,7 @@ public class PhotoViewAttacher implements View.OnLayoutChangeListener {
         final float imgBili = drawableHeight / drawableWidth;
         final float viewBili = viewHeight / viewWidth;
         //长图浏览开始的位置为0
-        boolean isStartToTop = mIsStartToTop || (drawableHeight > viewHeight / 2 && imgBili > viewBili) || imgBili > 6;
+        boolean isStartToTop = mIsStartToTop || (drawableHeight > viewHeight && imgBili > viewBili) || imgBili > 6;
 
         if (mScaleType == ScaleType.CENTER) {
             mBaseMatrix.postTranslate((viewWidth - drawableWidth) / 2F,
